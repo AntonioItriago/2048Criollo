@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>2048 Criollo</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<!-- ===== MONETAG SDK ===== -->
 <script src='//libtl.com/sdk.js' data-zone='12026349' data-sdk='show_12026349'></script>
-
 <style>
   :root {
     --bg: #0f1419;
@@ -43,7 +40,6 @@
     padding: 8px;
   }
 
-  /* ===== BANNER PUBLICITARIO ===== */
   #banner-container {
     background: var(--panel);
     border-radius: 8px;
@@ -64,16 +60,16 @@
     display: block;
   }
 
-  /* Header */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    gap: 8px;
   }
 
   .title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
@@ -86,26 +82,43 @@
 
   .score-box {
     background: var(--panel);
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: 8px;
     text-align: center;
-    min-width: 70px;
+    min-width: 60px;
   }
 
   .score-label {
-    font-size: 10px;
+    font-size: 9px;
     color: #888;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
   .score-value {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--accent);
   }
 
-  /* Tablero */
+  .btn-help {
+    background: var(--panel);
+    border: none;
+    color: var(--accent);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .btn-help:active { transform: scale(0.9); }
+
   .board-wrapper {
     flex: 1;
     display: flex;
@@ -138,7 +151,7 @@
     justify-content: center;
     border-radius: 8px;
     font-weight: 700;
-    transition: transform 0.15s ease, background 0.2s ease;
+    transition: transform 0.15s ease;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     overflow: hidden;
   }
@@ -157,7 +170,7 @@
   .tile-2    { background: #8d7b68; }
   .tile-4    { background: #c08b5c; }
   .tile-8    { background: #e0a96d; }
-  .tile-16   { background: #d4a373; color:#fff;}
+  .tile-16   { background: #d4a373; }
   .tile-32   { background: #e76f51; }
   .tile-64   { background: #f4a261; }
   .tile-128  { background: #e63946; }
@@ -180,7 +193,6 @@
   }
   .tile.merged { animation: merge 0.25s ease; }
 
-  /* Controles */
   .controls { display: flex; gap: 8px; margin-top: 10px; }
 
   .btn {
@@ -190,10 +202,10 @@
     border: none;
     padding: 12px;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.1s, background 0.2s;
+    transition: transform 0.1s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -205,7 +217,6 @@
   .btn-undo:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-new { background: linear-gradient(135deg, var(--accent2), #a01020); }
 
-  /* Overlay Game Over */
   .overlay {
     position: absolute;
     inset: 0;
@@ -220,11 +231,10 @@
     padding: 20px;
   }
   .overlay.show { display: flex; }
-  .overlay h2 { font-size: 28px; margin: 0 0 10px; color: var(--accent); }
-  .overlay p { margin: 0 0 20px; color: #ccc; }
+  .overlay h2 { font-size: 26px; margin: 0 0 10px; color: var(--accent); }
+  .overlay p { margin: 0 0 20px; color: #ccc; font-size: 14px; }
   .overlay .btn { max-width: 200px; }
 
-  /* Modal de anuncio */
   .ad-modal {
     position: fixed;
     inset: 0;
@@ -250,24 +260,174 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .ad-modal .status { font-size: 16px; margin-top: 10px; }
   .ad-modal .error { color: #ff6b6b; font-size: 14px; margin-top: 10px; }
+
+  /* ===== MODAL DE AYUDA ===== */
+  .help-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 15px;
+  }
+  .help-overlay.show { display: flex; }
+
+  .help-modal {
+    background: var(--panel);
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    position: relative;
+    border: 2px solid var(--accent);
+  }
+
+  .help-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .help-modal h2 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    color: var(--accent);
+    text-align: center;
+  }
+
+  .help-section {
+    margin-bottom: 16px;
+  }
+
+  .help-section h3 {
+    font-size: 14px;
+    color: var(--accent2);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 4px;
+  }
+
+  .help-section p, .help-section li {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #ddd;
+    margin: 4px 0;
+  }
+
+  .help-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .help-section li {
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dish-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .dish-item {
+    background: var(--grid-bg);
+    border-radius: 8px;
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .dish-item .dish-emoji {
+    font-size: 18px;
+  }
+
+  .dish-item .dish-name {
+    flex: 1;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .dish-item .dish-value {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 10px;
+  }
+
+  .goal-dish {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    grid-column: span 2;
+    padding: 10px;
+    font-weight: 700;
+  }
+
+  .goal-dish .dish-name {
+    font-size: 13px;
+  }
+
+  .controls-demo {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .arrow-key {
+    background: var(--grid-bg);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 1px solid #555;
+  }
+
+  .tip-box {
+    background: rgba(245, 197, 24, 0.1);
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #fff;
+  }
+
+  .help-modal::-webkit-scrollbar { width: 6px; }
+  .help-modal::-webkit-scrollbar-track { background: transparent; }
+  .help-modal::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ===== BANNER PUBLICITARIO (Monetag + banner.jpg) ===== -->
   <div id="banner-container">
     <img src="banner.jpg" alt="Publicidad" onerror="this.style.display='none'" />
-    <script>
-      // El script de Monetag se carga desde el <head> con data-sdk='show_12026349'
-      // Si necesitas forzar la carga del banner aquí, descomenta:
-      // if (typeof show_12026349 === 'function') { show_12026349(); }
-    </script>
   </div>
 
-  <!-- Header -->
   <div class="header">
-    <h1 class="title">🇻🇪 2048 Criollo</h1>
+    <h1 class="title">🇻 2048 Criollo</h1>
     <div class="scores">
       <div class="score-box">
         <div class="score-label">Puntos</div>
@@ -278,9 +438,9 @@
         <div class="score-value" id="best">0</div>
       </div>
     </div>
+    <button class="btn-help" onclick="toggleHelp()" title="Ayuda">?</button>
   </div>
 
-  <!-- Tablero -->
   <div class="board-wrapper">
     <div class="board" id="board">
       <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
@@ -296,7 +456,6 @@
     </div>
   </div>
 
-  <!-- Controles -->
   <div class="controls">
     <button class="btn btn-undo" id="btn-undo" onclick="handleUndo()">
       🎬 Ver Anuncio y Deshacer
@@ -307,7 +466,119 @@
   </div>
 </div>
 
-<!-- Modal de anuncio recompensado -->
+<!-- ===== MODAL DE AYUDA ===== -->
+<div class="help-overlay" id="help-overlay" onclick="closeHelpOutside(event)">
+  <div class="help-modal">
+    <button class="help-close" onclick="toggleHelp()">✕</button>
+
+    <h2>🇻🇪 ¿Cómo Jugar?</h2>
+
+    <div class="help-section">
+      <h3>🎯 Objetivo</h3>
+      <p>Combina platos de la cocina venezolana deslizando las fichas en el tablero hasta crear el <strong style="color: var(--accent);">Gran Banquete Criollo (2048)</strong>. ¡El plato supremo!</p>
+    </div>
+
+    <div class="help-section">
+      <h3>🕹️ Controles</h3>
+      <p>Desliza el dedo en cualquier dirección para mover todas las fichas:</p>
+      <div class="controls-demo">
+        <div class="arrow-key">⬆️</div>
+        <div class="arrow-key">⬇️</div>
+        <div class="arrow-key">⬅️</div>
+        <div class="arrow-key">➡️</div>
+      </div>
+      <p>También puedes usar las <strong>flechas del teclado</strong> en PC.</p>
+    </div>
+
+    <div class="help-section">
+      <h3>🍽️ Fusión de Platos</h3>
+      <p>Cuando dos fichas <strong>idénticas</strong> chocan, se fusionan en el siguiente plato de la escala:</p>
+      <div class="dish-list">
+        <div class="dish-item">
+          <span class="dish-emoji"></span>
+          <span class="dish-name">Masa Harina Pan</span>
+          <span class="dish-value">2</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji"></span>
+          <span class="dish-name">Arepa Viuda</span>
+          <span class="dish-value">4</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji"></span>
+          <span class="dish-name">Queso Blanco</span>
+          <span class="dish-value">8</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji">🥩</span>
+          <span class="dish-name">Arepa Pelúa</span>
+          <span class="dish-value">16</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji"></span>
+          <span class="dish-name">Reina Pepiada</span>
+          <span class="dish-value">32</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji">🌽</span>
+          <span class="dish-name">Cachapa</span>
+          <span class="dish-value">64</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji"></span>
+          <span class="dish-name">Empanada Pabellón</span>
+          <span class="dish-value">128</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji">🍌</span>
+          <span class="dish-name">Patacón Zuliano</span>
+          <span class="dish-value">256</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji">🍛</span>
+          <span class="dish-name">Pabellón Criollo</span>
+          <span class="dish-value">512</span>
+        </div>
+        <div class="dish-item">
+          <span class="dish-emoji">🍲</span>
+          <span class="dish-name">Sancocho</span>
+          <span class="dish-value">1024</span>
+        </div>
+        <div class="dish-item goal-dish">
+          <span class="dish-emoji">🎉</span>
+          <span class="dish-name">¡GRAN BANQUETE CRIOLLO!</span>
+          <span class="dish-value">2048</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <h3>⭐ Puntuación</h3>
+      <p>Cada vez que fusionas dos fichas, sumas puntos igual al valor del plato resultante. ¡Intenta superar tu mejor marca!</p>
+    </div>
+
+    <div class="help-section">
+      <h3>⏪ Deshacer Movimiento</h3>
+      <p>¿Cometiste un error? Usa el botón <strong>"Ver Anuncio y Deshacer"</strong> para retroceder un turno. Debes ver un anuncio corto como recompensa.</p>
+    </div>
+
+    <div class="help-section">
+      <h3>💡 Consejos</h3>
+      <ul>
+        <li>📌 Mantén tu ficha más alta en una esquina</li>
+        <li> No muevas esa esquina a menos que sea necesario</li>
+        <li> Planifica 2-3 movimientos adelante</li>
+        <li>📌 Usa el deshacer sabiamente</li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      💛 <strong>¡Hecho con amor venezolano!</strong> Comparte el juego con tus panas para ver quién llega primero al Banquete Criollo. 🇪
+    </div>
+  </div>
+</div>
+
+<!-- Modal de anuncio -->
 <div class="ad-modal" id="ad-modal">
   <div class="spinner"></div>
   <div>📺 Cargando anuncio...</div>
@@ -315,11 +586,6 @@
 </div>
 
 <script>
-/* ============================================================
-   2048 CRIOLLO - Telegram Mini App (Monetag integrado)
-   ============================================================ */
-
-// Integración con Telegram
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) {
   tg.ready();
@@ -328,7 +594,6 @@ if (tg) {
   tg.setBackgroundColor('#0f1419');
 }
 
-// Escala de fichas
 const TILES = {
   2:    { name: 'Masa Harina Pan',     emoji: '🫓' },
   4:    { name: 'Arepa Viuda',         emoji: '🥙' },
@@ -361,10 +626,33 @@ const overlayMsg = document.getElementById('overlay-msg');
 const btnUndo = document.getElementById('btn-undo');
 const adModal = document.getElementById('ad-modal');
 const adStatus = document.getElementById('ad-status');
+const helpOverlay = document.getElementById('help-overlay');
 
 bestEl.textContent = best;
 
-/* ---------- Inicialización ---------- */
+/* ---------- AYUDA ---------- */
+function toggleHelp() {
+  helpOverlay.classList.toggle('show');
+  if (tg && tg.HapticFeedback) {
+    tg.HapticFeedback.impactOccurred('light');
+  }
+}
+
+function closeHelpOutside(e) {
+  if (e.target === helpOverlay) {
+    helpOverlay.classList.remove('show');
+  }
+}
+
+// Mostrar ayuda automáticamente en la primera partida
+if (!localStorage.getItem('helpShown2048')) {
+  setTimeout(() => {
+    toggleHelp();
+    localStorage.setItem('helpShown2048', '1');
+  }, 500);
+}
+
+/* ---------- JUEGO ---------- */
 function newGame() {
   board = Array.from({length: SIZE}, () => Array(SIZE).fill(0));
   score = 0;
@@ -390,7 +678,6 @@ function addRandomTile() {
   return [r, c];
 }
 
-/* ---------- Renderizado ---------- */
 function render(newTilePos = null, mergedPositions = []) {
   boardEl.querySelectorAll('.tile').forEach(t => t.remove());
 
@@ -439,7 +726,6 @@ function render(newTilePos = null, mergedPositions = []) {
   }
 }
 
-/* ---------- Lógica de movimiento ---------- */
 function saveState() {
   previousState = {
     board: JSON.parse(JSON.stringify(board)),
@@ -547,15 +833,11 @@ function showOverlay(title, msg) {
   overlayEl.classList.add('show');
 }
 
-/* ============================================================
-   DESHACER CON ANUNCIO RECOMPENSADO DE MONETAG
-   ============================================================ */
 async function handleUndo() {
   if (!canUndo || !previousState) return;
 
-  // Verificar que el SDK de Monetag esté cargado
   if (typeof window.show_12026349 !== 'function') {
-    alert('⚠️ El anuncio no está disponible en este momento. Intenta más tarde.');
+    alert('⚠️ El anuncio no está disponible en este momento.');
     return;
   }
 
@@ -564,11 +846,8 @@ async function handleUndo() {
   adStatus.className = 'status';
 
   try {
-    // Llamar al anuncio recompensado de Monetag
     await window.show_12026349();
-
-    // Si llega aquí, el usuario vio el anuncio completo → otorgar recompensa
-    adStatus.textContent = '✅ ¡Anuncio completado! Restaurando partida...';
+    adStatus.textContent = '✅ ¡Anuncio completado!';
 
     setTimeout(() => {
       board = previousState.board;
@@ -579,7 +858,6 @@ async function handleUndo() {
       gameOver = false;
       overlayEl.classList.remove('show');
       render();
-
       adModal.classList.remove('show');
 
       if (tg && tg.HapticFeedback) {
@@ -588,18 +866,13 @@ async function handleUndo() {
     }, 800);
 
   } catch (err) {
-    // El usuario cerró el anuncio antes de tiempo o hubo error
-    console.error('Error en anuncio Monetag:', err);
-    adStatus.textContent = '❌ Anuncio cancelado o no disponible';
+    console.error('Error en anuncio:', err);
+    adStatus.textContent = '❌ Anuncio cancelado';
     adStatus.className = 'status error';
-
-    setTimeout(() => {
-      adModal.classList.remove('show');
-    }, 1500);
+    setTimeout(() => adModal.classList.remove('show'), 1500);
   }
 }
 
-/* ---------- Controles: teclado ---------- */
 document.addEventListener('keydown', (e) => {
   const map = {
     'ArrowLeft': 'left', 'ArrowRight': 'right',
@@ -612,7 +885,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ---------- Controles: swipe táctil ---------- */
 let startX = 0, startY = 0, tracking = false;
 
 document.addEventListener('touchstart', (e) => {
@@ -641,7 +913,6 @@ document.addEventListener('touchend', (e) => {
 
 window.addEventListener('resize', () => render());
 
-/* ---------- Arranque ---------- */
 newGame();
 </script>
 </body>
